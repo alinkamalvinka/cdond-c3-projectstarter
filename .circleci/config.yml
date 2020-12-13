@@ -48,7 +48,7 @@ jobs:
             cd frontend; npm i; npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build
+          key: frontend-build-{{ checksum "package.json" }}
 
   build-backend:
     <<: *defaults
@@ -61,14 +61,14 @@ jobs:
              cd backend; npm i; npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: backend-build
+          key: backend-build-{{ checksum "package.json" }}
 
   test-frontend:
     <<: *defaults
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [frontend-build-{{ checksum "package.json" }}]
       - run:
           name: test frontend
           command: cd frontend; npm run test
@@ -78,7 +78,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build-{{ checksum "package.json" }}]
       - run:
           name: test backend
           command: cd backend; npm run test
@@ -88,7 +88,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [frontend-build-{{ checksum "package.json" }}]
       - run:
           name: test vulnerabilities
           command: cd frontend; npm audit --audit-level=critical
@@ -98,7 +98,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build-{{ checksum "package.json" }}]
       - run:
           name: test backend vulnerabilities
           command: cd backend; npm audit --audit-level=critical
