@@ -98,6 +98,7 @@ jobs:
       - run:
           name: test backend
           command: cd backend; npm run test
+      - notify_slack
 
   scan-frontend:
     <<: *defaults
@@ -300,6 +301,7 @@ workflows:
           context: slack_secrets
       - test-backend:
           requires: [build-backend]
+          context: slack_secrets
       - scan-backend:
           requires: [build-backend]
       - scan-frontend:
