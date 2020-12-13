@@ -52,23 +52,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
       - run:
           name: Build front-end
           command: |
@@ -115,7 +98,23 @@ jobs:
       - run:
           name: test backend
           command: cd backend; npm run test
-      - notify_slack
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a fail notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: fail
 
   scan-frontend:
     <<: *defaults
