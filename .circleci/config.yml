@@ -121,28 +121,6 @@ jobs:
           name: test backend vulnerabilities
           command: cd backend; npm audit --audit-level=critical
 
-
-  notify:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: always
 #
 #  deploy-infrastructure:
 #    docker:
@@ -313,10 +291,13 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: slack_secrets
+      - build-backend:
+          context: slack-secrets
       - test-frontend:
           requires: [build-frontend]
+          context: slack-secrets
       - test-backend:
           requires: [build-backend]
       - scan-backend:
