@@ -74,7 +74,23 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build-{{ checksum "backend/package.json" }}
-      - notify_slack
+      - slack/notify:
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*This is a fail notification*",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
+          event: fail
 
   test-frontend:
     <<: *defaults
