@@ -91,6 +91,7 @@ jobs:
               ]
             }
           event: fail
+          when: on_fail
 
   test-frontend:
     <<: *defaults
