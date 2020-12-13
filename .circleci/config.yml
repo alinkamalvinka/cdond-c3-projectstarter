@@ -3,13 +3,36 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.0
 
-commands:
-  notify_slack:
-    steps:
-      - slack/notify:
-          event: fail
-          mentions: '@here'
-          template: basic_fail_1
+slack_fail: &slack_fail
+  post-steps:
+    - slack/notify:
+        custom: |
+          {
+            "text": "",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "❌ *Failure* #${CIRCLE_BUILD_NUM} `${CIRCLE_PROJECT_REPONAME}` on `${CIRCLE_BRANCH}`"
+                }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "View Job"
+                    },
+                    "url": "${CIRCLE_BUILD_URL}"
+                  }
+                ]
+              }
+            ]
+          }
+        event: fail
 
 defaults: &defaults
   docker:
@@ -60,7 +83,6 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build-{{ checksum "frontend/package.json" }}
-      - notify_slack
 
   build-backend:
     <<: *defaults
@@ -74,24 +96,6 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build-{{ checksum "backend/package.json" }}
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a fail notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: fail
-          when: on_fail
 
   test-frontend:
     <<: *defaults
@@ -103,7 +107,6 @@ jobs:
       - run:
           name: test frontend
           command: cd frontend; npm run test
-      - notify_slack
 
   test-backend:
     <<: *defaults
@@ -115,23 +118,6 @@ jobs:
       - run:
           name: test backend
           command: cd backend; npm run test
-      - slack/notify:
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a fail notification*",
-                      "emoji": true
-                    }
-                  ]
-                }
-              ]
-            }
-          event: fail
 
   scan-frontend:
     <<: *defaults
@@ -326,15 +312,17 @@ workflows:
   default:
     jobs:
       - build-frontend:
-          context: slack_secrets
+          context:
+            - slack_secrets
+          <<: *slack_fail
       - build-backend:
-          context: slack_secrets
+          context:
+            - slack_secrets
+          <<: *slack_fail
       - test-frontend:
           requires: [build-frontend]
-          context: slack_secrets
       - test-backend:
           requires: [build-backend]
-          context: slack_secrets
       - scan-backend:
           requires: [build-backend]
       - scan-frontend:
