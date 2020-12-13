@@ -179,6 +179,7 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
 
+
 #  configure-infrastructure:
 #    docker:
 #      - image: python:3.7-alpine3.11
@@ -316,8 +317,8 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+#      - build-frontend
+#      - build-backend
 #          context:
 #            - slack_secrets
 #          <<: *slack_fail
