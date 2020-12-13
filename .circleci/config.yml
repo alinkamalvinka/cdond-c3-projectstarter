@@ -4,14 +4,14 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here   
+      # Add parameter here
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
             # Your code here
-            exit 1
+            aws cloudformation delete-stack --stack-name prod-${CIRCLE_WORKFLOW_ID}
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -44,7 +44,7 @@ jobs:
           name: Build front-end
           command: |
             # Your code here
-            exit 1
+            npm run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -60,7 +60,7 @@ jobs:
           name: Back-end build
           command: |
              # Your code here
-             exit 1
+             npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
