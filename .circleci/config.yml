@@ -48,7 +48,7 @@ jobs:
             cd frontend; npm i; npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: frontend-build-{{ checksum "package.json" }}
+          key: frontend-build-{{ checksum "frontend/package.json" }}
 
   build-backend:
     <<: *defaults
@@ -61,7 +61,7 @@ jobs:
              cd backend; npm i; npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: backend-build-{{ checksum "package.json" }}
+          key: backend-build-{{ checksum "backend/package.json" }}
 
   test-frontend:
     <<: *defaults
@@ -69,7 +69,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-build-{{ checksum "package.json" }}
+            - frontend-build-{{ checksum "frontend/package.json" }}
       - run:
           name: test frontend
           command: cd frontend; npm run test
@@ -80,7 +80,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - backend-build-{{ checksum "package.json" }}
+            - backend-build-{{ checksum "backend/package.json" }}
       - run:
           name: test backend
           command: cd backend; npm run test
@@ -91,7 +91,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - frontend-build-{{ checksum "package.json" }}
+            - frontend-build-{{ checksum "frontend/package.json" }}
       - run:
           name: test vulnerabilities
           command: cd frontend; npm audit --audit-level=critical
@@ -102,7 +102,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - backend-build-{{ checksum "package.json" }}
+            - backend-build-{{ checksum "backend/package.json" }}
       - run:
           name: test backend vulnerabilities
           command: cd backend; npm audit --audit-level=critical
