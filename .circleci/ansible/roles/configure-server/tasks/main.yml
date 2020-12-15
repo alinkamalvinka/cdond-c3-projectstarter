@@ -1,4 +1,16 @@
-- name: Creates directory
+- name: "create directory"
   file:
-    path: ~/web
+    path: home/ubuntu/project/backend
     state: directory
+
+- name: "copy files"
+  copy:
+    src: /root/project/backend
+    dest: home/ubuntu/project
+
+- name: "install dependencies from package"
+  shell: cd home/ubuntu/project/backend; npm i
+
+- name: "build backend"
+  shell: cd home/ubuntu/project/backend; npm run build
+
