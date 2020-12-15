@@ -32,6 +32,6 @@
         state: latest
 
 
-  roles:
-    - configure-server
-    - configure-prometheus-node-exporter
+#  roles:
+#    - configure-server
+#    - configure-prometheus-node-exporter

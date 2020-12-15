@@ -5,7 +5,7 @@
 
 - name: "copy files"
   copy:
-    src: /root/project/backend
+    src: backend
     dest: home/ubuntu/project
 
 - name: "install dependencies from package"
