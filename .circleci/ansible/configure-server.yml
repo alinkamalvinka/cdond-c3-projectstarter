@@ -9,6 +9,16 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
+  environment:
+    ENVIRONMENT: production
+    TYPEORM_CONNECTION: postgres
+    TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
+    TYPEORM_HOST: Todo {your postgres database hostname in RDS}
+    TYPEORM_PORT: 5532 #(or the port from RDS if it’s different)
+    TYPEORM_USERNAME: todo #{your postgres database username in RDS}
+    TYPEORM_PASSWORD: todo #{your postgres database password in RDS}
+    TYPEORM_DATABASE: todo #{your postgres database name in RDS}
+
   pre_tasks:
     - name: Wait 300 seconds, but only start checking after 60 seconds
       wait_for_connection:
@@ -42,7 +52,6 @@
       shell: npm install pm2 -g
 
 
-
-#  roles:
-#    - configure-server
-#    - configure-prometheus-node-exporter
+  roles:
+    - configure-server
+    - configure-prometheus-node-exporter

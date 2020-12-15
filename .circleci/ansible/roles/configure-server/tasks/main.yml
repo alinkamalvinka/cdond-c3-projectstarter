@@ -1,16 +1,16 @@
 - name: "create directory"
   file:
-    path: home/ubuntu/project/backend
+    path: ~/udacity
     state: directory
 
 - name: "copy files"
   copy:
     src: backend
-    dest: home/ubuntu/project
+    dest: ~/udacity/backend
 
 - name: "install dependencies from package"
-  shell: cd home/ubuntu/project/backend; npm i
+  shell: cd ~/udacity/backend; npm i
 
 - name: "build backend"
-  shell: cd home/ubuntu/project/backend; npm run build
+  shell: cd ~/udacity/backend; npm run build
 
