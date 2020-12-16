@@ -209,12 +209,18 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            cd backend; npm run migrations
+            cd backend; npm run migrations | tee migrations_result.txt
 #      - run:
-#          name: Send migration results to memstash
+#          name: get migrations result
 #          command: |
-#            # Your code here
-#            exit 1
+#            -
+      - run:
+          name: Send migration results to memstash
+          command: |
+            curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
+            --request PUT --data "@migrations_result.txt" \
+            https://api.memstash.io/values/migration
+#            _${CIRCLE_WORKFLOW_ID}
      # Here's where you will add some code to rollback on failure
 #
 #  deploy-frontend:

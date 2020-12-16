@@ -6,7 +6,7 @@
 - name: "copy files"
   copy:
     src: "{{ role_path }}/../../../../backend"
-    dest: ~/udacity/backend
+    dest: ~/udacity
 
 - name: "install dependencies from package"
   shell: cd ~/udacity/backend; npm i

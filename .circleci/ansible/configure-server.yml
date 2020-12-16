@@ -13,11 +13,11 @@
     ENVIRONMENT: production
     TYPEORM_CONNECTION: postgres
     TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
-    TYPEORM_HOST: Todo {your postgres database hostname in RDS}
-    TYPEORM_PORT: 5532 #(or the port from RDS if it’s different)
-    TYPEORM_USERNAME: todo #{your postgres database username in RDS}
-    TYPEORM_PASSWORD: todo #{your postgres database password in RDS}
-    TYPEORM_DATABASE: todo #{your postgres database name in RDS}
+    TYPEORM_HOST: udacity.caznq9wvkubq.us-west-2.rds.amazonaws.com
+    TYPEORM_PORT: 5532
+    TYPEORM_USERNAME: postgres
+    TYPEORM_PASSWORD: udacity1!
+    TYPEORM_DATABASE: udacity
 
   pre_tasks:
     - name: Wait 300 seconds, but only start checking after 60 seconds
