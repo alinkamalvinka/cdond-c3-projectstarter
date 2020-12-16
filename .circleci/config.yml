@@ -195,6 +195,11 @@ jobs:
             # Your code here
             apk add --update ansible
       - run:
+          name: Install rsync
+          command: |
+            # Your code here
+            apk add rsync
+      - run:
           name: Configure server
           command: |
             # Your code here
@@ -210,16 +215,19 @@ jobs:
           name: Run migrations
           command: |
             cd backend; npm run migrations | tee migrations_result.txt
-#      - run:
-#          name: get migrations result
-#          command: |
-#            -
       - run:
-          name: Send migration results to memstash
+          name: get and send migrations result to memstash
           command: |
-            curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
-            --request PUT --data "@migrations_result.txt" \
-            https://api.memstash.io/values/migration
+            if cat migrations_result.txt | grep "has been executed successfully" ; then
+              curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
+                          --request PUT --data "sucess" \
+                          https://api.memstash.io/values/migration
+            else
+              curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
+                          --request PUT --data "fail" \
+                          https://api.memstash.io/values/migration
+            fi
+
 #            _${CIRCLE_WORKFLOW_ID}
      # Here's where you will add some code to rollback on failure
 #
