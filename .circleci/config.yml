@@ -214,7 +214,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            cd backend; npm run migrations | tee migrations_result.txt
+            cd backend; npm i; npm run migrations | tee migrations_result.txt
       - run:
           name: get and send migrations result to memstash
           command: |
