@@ -159,14 +159,14 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-#      - run:
-#          name: Ensure front-end infrastructure exist
-#          command: |
-#            aws cloudformation deploy \
-#              --template-file .circleci/files/frontend.yml \
-#              --tags project=udapeople \
-#              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+      - run:
+          name: Ensure front-end infrastructure exist
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/frontend.yml \
+              --tags project=udapeople \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -186,7 +186,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: [1a:c4:71:93:e3:1e:84:eb:f6:c3:dc:6f:53:22:bd:1c]
+          fingerprints: [ef:f3:e8:82:3a:fc:e9:69:5e:78:fb:fe:2b:b7:2a:c6]
       - attach_workspace:
           at: ~/
       - run:
@@ -194,11 +194,11 @@ jobs:
           command: |
             # Your code here
             apk add --update ansible
-      - run:
-          name: Install rsync
-          command: |
-            # Your code here
-            apk add rsync
+#      - run:
+#          name: Install rsync
+#          command: |
+#            # Your code here
+#            apk add rsync
       - run:
           name: Configure server
           command: |
@@ -207,8 +207,7 @@ jobs:
 #       Here's where you will add some code to rollback on failure
 
   run-migrations:
-    docker:
-      - image: circleci/node:13.8.0
+    <<: *defaults
     steps:
       - checkout
       - run:
@@ -229,28 +228,28 @@ jobs:
             fi
 
 #            _${CIRCLE_WORKFLOW_ID}
-     # Here's where you will add some code to rollback on failure
-#
-#  deploy-frontend:
-#    docker:
-#      # Docker image here that supports AWS CLI
-#    steps:
-#      # Checkout code from git
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            # your code here
-#      - run:
-#          name: Get backend url
-#          command: |
-#            # your code here
-#            export API_URL="http://${BACKEND_IP}:3030"
-#            echo "${API_URL}"
-#      - run:
-#          name: Deploy frontend objects
-#          command: |
-#            # your code here
-#      # Here's where you will add some code to rollback on failure
+#      Here's where you will add some code to rollback on failure
+
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure
 #
 #  deploy-backend:
 #    docker:
