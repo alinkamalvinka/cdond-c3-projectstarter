@@ -109,8 +109,8 @@ jobs:
       - run:
           name: test frontend
           command: |
-          cd frontend
-          npm run test
+            cd frontend
+            npm run test
 
   test-backend:
     <<: *defaults
@@ -122,8 +122,8 @@ jobs:
       - run:
           name: test backend
           command: |
-          cd backend
-          npm run test
+            cd backend
+            npm run test
 
   scan-frontend:
     <<: *defaults
@@ -135,8 +135,8 @@ jobs:
       - run:
           name: test vulnerabilities
           command: |
-          cd frontend
-          npm audit --audit-level=critical
+            cd frontend
+            npm audit --audit-level=critical
 
   scan-backend:
     <<: *defaults
@@ -147,7 +147,9 @@ jobs:
             - backend-build-{{ checksum "backend/package.json" }}
       - run:
           name: test backend vulnerabilities
-          command: cd backend; npm audit --audit-level=critical
+          command: |
+            cd backend
+            npm audit --audit-level=critical
 
 
   deploy-infrastructure:
