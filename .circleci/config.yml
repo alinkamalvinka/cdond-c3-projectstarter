@@ -194,11 +194,6 @@ jobs:
           command: |
             # Your code here
             apk add --update ansible
-#      - run:
-#          name: Install rsync
-#          command: |
-#            # Your code here
-#            apk add rsync
       - run:
           name: Configure server
           command: |

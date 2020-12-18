@@ -9,11 +9,14 @@
     dest: ~/udacity
 
 - name: "install dependencies from package"
-  shell: cd ~/udacity/backend; npm i
+  shell: cd ~/udacity/backend && npm i
 
 - name: "build backend"
-  shell: cd ~/udacity/backend; npm run build
+  shell: cd ~/udacity/backend && npm run build
+
+- name: "run migrations"
+  shell: cd ~/udacity/backend && npm run migrations
 
 - name: "execute backend"
-  shell: cd ~/udacity/backend; pm2 start npm --name backend -- start
+  shell: cd ~/udacity/backend && pm2 start npm --name backend -- start
 
