@@ -208,6 +208,7 @@ jobs:
       - checkout
       - run:
           name: Run migrations
+          no_output_timeout: 10m
           command: |
             cd backend; npm i; npm run migrations | tee migrations_result.txt
       - run:
