@@ -78,8 +78,9 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            # Your code here
-            cd frontend; npm i; npm run build
+            cd frontend
+            npm i
+            npm run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build-{{ checksum "frontend/package.json" }}
@@ -91,8 +92,9 @@ jobs:
       - run:
           name: Back-end build
           command: |
-             # Your code here
-             cd backend; npm i; npm run build
+            cd backend
+            npm i
+            npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build-{{ checksum "backend/package.json" }}
@@ -106,7 +108,9 @@ jobs:
             - frontend-build-{{ checksum "frontend/package.json" }}
       - run:
           name: test frontend
-          command: cd frontend; npm run test
+          command: |
+          cd frontend
+          npm run test
 
   test-backend:
     <<: *defaults
@@ -117,7 +121,9 @@ jobs:
             - backend-build-{{ checksum "backend/package.json" }}
       - run:
           name: test backend
-          command: cd backend; npm run test
+          command: |
+          cd backend
+          npm run test
 
   scan-frontend:
     <<: *defaults
@@ -128,7 +134,9 @@ jobs:
             - frontend-build-{{ checksum "frontend/package.json" }}
       - run:
           name: test vulnerabilities
-          command: cd frontend; npm audit --audit-level=critical
+          command: |
+          cd frontend
+          npm audit --audit-level=critical
 
   scan-backend:
     <<: *defaults
@@ -150,7 +158,8 @@ jobs:
       - run:
           name: install deps
           command: |
-            apk add tar py-pip;  pip install awscli
+            apk add tar py-pip
+            pip install awscli
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -192,12 +201,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # Your code here
             apk add --update ansible
       - run:
           name: Configure server
           command: |
-            # Your code here
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt ~/project/.circleci/ansible/configure-server.yml
           no_output_timeout: 30m
 #       Here's where you will add some code to rollback on failure
@@ -210,21 +217,21 @@ jobs:
           name: Run migrations
           no_output_timeout: 30m
           command: |
-            cd backend; npm i; npm run migrations | tee migrations_result.txt
+            cd backend
+            npm i
+            npm run migrations | tee migrations_result.txt
       - run:
           name: get and send migrations result to memstash
           command: |
             if cat migrations_result.txt | grep "has been executed successfully" ; then
-              curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
+              curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
                           --request PUT --data "sucess" \
                           https://api.memstash.io/values/migration
             else
-              curl -H "Content-Type: text/plain" -H "token: bf81b6bf-c531-4f6a-aa01-5e5cc419ceff" \
+              curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
                           --request PUT --data "fail" \
                           https://api.memstash.io/values/migration
             fi
-
-#            _${CIRCLE_WORKFLOW_ID}
 #      Here's where you will add some code to rollback on failure
 
 
@@ -236,18 +243,34 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
+            yum -y install nodejs
+            yum -y install tar gzip
       - run:
           name: Get backend url
           command: |
-            # your code here
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            echo "${API_URL}" >> "frontend/.env"
+      - run:
+          name: Install dependencies and build frontend
+          command: |
+            cd frontend
+            npm install
+            npm run build
       - run:
           name: Deploy frontend objects
           command: |
-            # your code here
+            cd frontend
+            aws s3 sync dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
+
 #
 #  deploy-backend:
 #    docker:
