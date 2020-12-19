@@ -9,16 +9,6 @@
     - ansible_host_key_checking: false
     - ansible_stdout_callback: yaml
 
-  environment:
-    ENVIRONMENT: production
-    TYPEORM_CONNECTION: postgres
-    TYPEORM_ENTITIES: ./src/modules/domain/**/*.entity.ts
-    TYPEORM_HOST: udacity.ctpknofqtlmm.us-west-2.rds.amazonaws.com
-    TYPEORM_PORT: 5432
-    TYPEORM_USERNAME: postgres
-    TYPEORM_PASSWORD: udacity1!
-    TYPEORM_DATABASE: udacity
-
   pre_tasks:
     - name: Wait 300 seconds, but only start checking after 60 seconds
       wait_for_connection:
