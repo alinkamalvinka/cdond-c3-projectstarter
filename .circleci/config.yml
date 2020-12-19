@@ -334,6 +334,7 @@ jobs:
             pip install awscli
       - run:
           name: Get backend url and Backend smoke test
+          no_output_timeout: 10m
           command: |
             BACKEND_IP=$(aws ec2 describe-instances \
             --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
