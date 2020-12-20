@@ -13,9 +13,9 @@
 
 - name: "build backend"
   shell: cd ~/udacity/backend && npm run build
-#
-#- name: "run migrations"
-#  shell: cd ~/udacity/backend && npm run migrations
+
+- name: "run migrations"
+  shell: cd ~/udacity/backend && npm run migrations
 
 - name: "execute backend"
   shell: cd ~/udacity/backend && pm2 start npm --name backend -- start
