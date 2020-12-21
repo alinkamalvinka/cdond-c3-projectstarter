@@ -32,7 +32,7 @@ slack_fail: &slack_fail
               }
             ]
           }
-        event: always
+        event: fail
 
 defaults: &defaults
   docker:
