@@ -31,6 +31,12 @@
         name: ["nodejs"]
         state: latest
 
+    - name: "install netstat"
+        become: yes
+        apt:
+          name: ["net-tools"]
+          state: latest
+
     - name: "install npm"
       become: yes
       apt:
