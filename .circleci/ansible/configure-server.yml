@@ -32,10 +32,10 @@
         state: latest
 
     - name: "install netstat"
-        become: yes
-        apt:
-          name: ["net-tools"]
-          state: latest
+      become: yes
+      apt:
+        name: ["net-tools"]
+        state: latest
 
     - name: "install npm"
       become: yes
